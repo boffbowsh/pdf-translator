@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Translator — Spanish → English</title>
+
+  <!-- pdf.js viewer styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/web/pdf_viewer.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Import map for ES modules -->
+  <script type="importmap">
+  {
+    "imports": {
+      "pdfjs-dist": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs",
+      "pdfjs-dist/web/pdf_viewer.mjs": "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/web/pdf_viewer.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loadingScreen">
+    <div class="loading-card">
+      <h1>PDF Translator</h1>
+      <p>Translate Spanish PDFs to English, entirely in your browser.<br>
+         Powered by TranslateGemma via WebGPU.</p>
+
+      <div id="webgpuError">
+        WebGPU is not available in this browser. Please use Chrome 113+ or Edge 113+.
+      </div>
+
+      <button id="downloadBtn">Download Model (~3.1 GB)</button>
+
+      <div class="progress-container">
+        <div id="progressFill"></div>
+        <span id="progressText">0%</span>
+      </div>
+
+      <div id="statusText"></div>
+    </div>
+  </div>
+
+  <!-- Viewer Section (hidden until model ready) -->
+  <div id="viewerSection">
+    <div class="toolbar">
+      <h2>PDF Translator</h2>
+      <button id="pickFileBtn">Open PDF</button>
+      <input type="file" id="fileInput" accept=".pdf">
+      <div class="toolbar-spacer"></div>
+      <div class="zoom-controls">
+        <button id="zoomOut" title="Zoom Out">−</button>
+        <select id="zoomSelect">
+          <option value="page-width">Page Width</option>
+          <option value="page-fit">Page Fit</option>
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1">100%</option>
+          <option value="1.25">125%</option>
+          <option value="1.5">150%</option>
+          <option value="2">200%</option>
+          <option value="3">300%</option>
+        </select>
+        <button id="zoomIn" title="Zoom In">+</button>
+      </div>
+    </div>
+
+    <div id="viewerContainer">
+      <div id="viewer" class="pdfViewer"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

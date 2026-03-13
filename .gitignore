@@ -1,0 +1,4 @@
+.cert/
+.claude/
+vendor/
+price_example.pdf

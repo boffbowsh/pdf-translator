@@ -235,36 +235,40 @@ body {
   background: #555;
 }
 
-#outlineView {
+#thumbnailView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   padding: 12px;
 }
 
-#outlineView ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
+.thumb-item {
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.15s;
 }
 
-#outlineView ul ul {
-  padding-left: 16px;
+.thumb-item:hover {
+  transform: scale(1.05);
 }
 
-#outlineView li {
-  margin: 2px 0;
-}
-
-#outlineView a {
+.thumb-item canvas {
   display: block;
-  padding: 4px 8px;
-  color: #333;
-  text-decoration: none;
-  font-size: 13px;
-  line-height: 1.4;
+  border: 2px solid #ccc;
   border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
-#outlineView a:hover {
-  background: #e0e0e0;
+.thumb-item:hover canvas {
+  border-color: #667eea;
+}
+
+.thumb-label {
+  display: block;
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
 }
 
 /* --- Translation Tooltip --- */

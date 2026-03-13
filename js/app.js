@@ -122,45 +122,50 @@ zoomOut.addEventListener("click", () => {
 
 eventBus.on("scalechanging", () => updateZoomSelect());
 
-// --- Sidebar ---
+// --- Sidebar (page thumbnails) ---
 const sidebar = document.getElementById("sidebar");
-const outlineView = document.getElementById("outlineView");
+const thumbnailView = document.getElementById("thumbnailView");
 const toggleSidebar = document.getElementById("toggleSidebar");
 
 toggleSidebar.addEventListener("click", () => {
   sidebar.classList.toggle("open");
 });
 
-function renderOutline(items, container) {
-  const ul = document.createElement("ul");
-  for (const item of items) {
-    const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.textContent = item.title;
-    a.href = "#";
-    a.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (item.dest) linkService.goToDestination(item.dest);
-    });
-    li.appendChild(a);
-    if (item.items?.length) {
-      renderOutline(item.items, li);
-    }
-    ul.appendChild(li);
-  }
-  container.appendChild(ul);
-}
+const THUMB_WIDTH = 150;
 
-async function loadOutline(pdfDocument) {
-  const outline = await pdfDocument.getOutline();
-  outlineView.innerHTML = "";
-  if (outline?.length) {
-    renderOutline(outline, outlineView);
-    toggleSidebar.style.display = "";
-    sidebar.classList.add("open");
-  } else {
-    toggleSidebar.style.display = "none";
-    sidebar.classList.remove("open");
+async function renderThumbnails(pdfDoc) {
+  thumbnailView.innerHTML = "";
+  const numPages = pdfDoc.numPages;
+
+  toggleSidebar.style.display = "";
+  sidebar.classList.add("open");
+
+  for (let i = 1; i <= numPages; i++) {
+    const page = await pdfDoc.getPage(i);
+    const viewport = page.getViewport({ scale: 1 });
+    const scale = THUMB_WIDTH / viewport.width;
+    const thumbViewport = page.getViewport({ scale });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = thumbViewport.width;
+    canvas.height = thumbViewport.height;
+
+    const ctx = canvas.getContext("2d");
+    await page.render({ canvasContext: ctx, viewport: thumbViewport }).promise;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "thumb-item";
+    wrapper.addEventListener("click", () => {
+      pdfViewer.currentPageNumber = i;
+    });
+
+    const label = document.createElement("span");
+    label.className = "thumb-label";
+    label.textContent = i;
+
+    wrapper.appendChild(canvas);
+    wrapper.appendChild(label);
+    thumbnailView.appendChild(wrapper);
   }
 }
 
@@ -177,7 +182,7 @@ fileInput.addEventListener("change", async (e) => {
 
   pdfViewer.setDocument(pdfDocument);
   linkService.setDocument(pdfDocument, null);
-  loadOutline(pdfDocument);
+  renderThumbnails(pdfDocument);
 });
 
 // --- Selection → translate ---

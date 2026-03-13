@@ -47,6 +47,7 @@
   <div id="viewerSection">
     <div class="toolbar">
       <h2>PDF Translator</h2>
+      <button id="toggleSidebar" title="Toggle Sidebar" style="display:none">TOC</button>
       <button id="pickFileBtn">Open PDF</button>
       <input type="file" id="fileInput" accept=".pdf">
       <div class="toolbar-spacer"></div>
@@ -67,8 +68,13 @@
       </div>
     </div>
 
-    <div id="viewerContainer">
-      <div id="viewer" class="pdfViewer"></div>
+    <div id="viewerBody">
+      <div id="sidebar">
+        <div id="outlineView"></div>
+      </div>
+      <div id="viewerContainer">
+        <div id="viewer" class="pdfViewer"></div>
+      </div>
     </div>
   </div>
 

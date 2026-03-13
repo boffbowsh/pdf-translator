@@ -122,6 +122,48 @@ zoomOut.addEventListener("click", () => {
 
 eventBus.on("scalechanging", () => updateZoomSelect());
 
+// --- Sidebar ---
+const sidebar = document.getElementById("sidebar");
+const outlineView = document.getElementById("outlineView");
+const toggleSidebar = document.getElementById("toggleSidebar");
+
+toggleSidebar.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
+});
+
+function renderOutline(items, container) {
+  const ul = document.createElement("ul");
+  for (const item of items) {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.textContent = item.title;
+    a.href = "#";
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (item.dest) linkService.goToDestination(item.dest);
+    });
+    li.appendChild(a);
+    if (item.items?.length) {
+      renderOutline(item.items, li);
+    }
+    ul.appendChild(li);
+  }
+  container.appendChild(ul);
+}
+
+async function loadOutline(pdfDocument) {
+  const outline = await pdfDocument.getOutline();
+  outlineView.innerHTML = "";
+  if (outline?.length) {
+    renderOutline(outline, outlineView);
+    toggleSidebar.style.display = "";
+    sidebar.classList.add("open");
+  } else {
+    toggleSidebar.style.display = "none";
+    sidebar.classList.remove("open");
+  }
+}
+
 // --- File loading ---
 pickFileBtn.addEventListener("click", () => fileInput.click());
 
@@ -135,6 +177,7 @@ fileInput.addEventListener("change", async (e) => {
 
   pdfViewer.setDocument(pdfDocument);
   linkService.setDocument(pdfDocument, null);
+  loadOutline(pdfDocument);
 });
 
 // --- Selection → translate ---
